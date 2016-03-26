@@ -1,0 +1,74 @@
+<!-- Author: Aron John S. Vibar
+            2013-03369 AB-1L
+      Program Desc: A web app that takes the name organization and contact number of a guest
+              in an event
+-->
+<!doctype html>
+<html>
+  <head>
+    <title>Event Guest Attendance</title>
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <link rel='stylesheet' type='text/css' href='/resources/tutorial/css/example.css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <table class = "table table-striped" id = "tablemaster" >
+      <thead>
+        <tr>
+          <th>Name </th>
+          <th>Organization </th>
+          <th>Contact Number</th>
+        </tr>
+      </thead>
+    </table>
+    <br>
+    <br>
+    <table class = "table table-condensed">
+      <thead>
+        <tr>
+          <th><h4>ADD AN ENTRY</h4></th>
+        </tr>
+      </thead>
+      <tr>
+        <td><input type='text' id='nameInput' placeholder='Name'>
+            <input type='text' id='orgInput' placeholder='Organization'>
+            <input type='text' id='conInput' placeholder='Contact Number'>
+            <button type="button" id="add" class = "btn-info">Add</button>
+        </td>
+    </table>
+    
+    
+    
+
+    <script>
+      var db = new Firebase('https://pg2yzjyxfmu.firebaseio-demo.com/');
+      /*When the add button is clicked, it gets the input data from the text boxes*/
+      $('#add').click(function () {
+          var name = $('#nameInput').val(); //name
+          var org = $('#orgInput').val(); //organization
+          var con = $('#conInput').val(); //contact number
+          db.push({name: name, organization: org,contactNumber:con});
+      });
+
+      /*Does the function below whenever information is added to the database*/
+      db.on('child_added', function(data) {
+        var message = data.val();
+        appendToTable(message.name, message.organization,message.contactNumber);
+      });
+
+      /*Creates a new row on the table and inserts data on the table*/
+      function appendToTable(name, organization,contactNumber) {
+        var table = document.getElementById("tablemaster");
+        var row = table.insertRow(table.rows.length);
+        var nam = row.insertCell(0);
+        var org = row.insertCell(1);
+        var con = row.insertCell(2);
+        nam.innerHTML = name;
+        org.innerHTML = organization;
+        con.innerHTML = contactNumber;
+      };
+    </script>
+  </body>
+</html>
